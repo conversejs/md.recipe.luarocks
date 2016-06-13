@@ -49,5 +49,27 @@ Sometimes, on systems where OS dependencies are installed to an alternative path
 to what `luarocks` expects, it's necessary to provide the PATH variables as
 well. This is done as follows::
 
-    lua-zlib 0.4-1 ZLIB_DIR=$ZLIB_DIR
-    luadbi-sqlite3 0.5-1 SQLITE_DIR=$SQLITE_DIR
+    [buildout]
+        parts += luarocks
+
+    [luarocks]
+    recipe = md.recipe.luarocks
+    rocks = 
+        lua-zlib 0.4-1 ZLIB_DIR=$ZLIB_DIR
+        luadbi-sqlite3 0.5-1 SQLITE_DIR=$SQLITE_DIR
+
+Specfying the luarocks executable
+*********************************
+
+By default the recipe will try to run `luarocks`, expecting it to be an
+executable in your PATH. You can specify an alternative exectuable, like so::
+
+    [buildout]
+        parts += luarocks
+
+    [luarocks]
+    recipe = md.recipe.luarocks
+    executable = luarocks-5.1
+    rocks = 
+        lua-zlib
+        luadbi-sqlite3

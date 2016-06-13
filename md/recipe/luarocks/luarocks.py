@@ -23,16 +23,17 @@ class LuaRocks(object):
         self.verbose = int(buildout['buildout'].get('verbosity', 0))
 
     def install(self):
-        if whereis('luarocks') is None:
+        executable = self.options.get('executable', 'luarocks').strip()
+        if whereis(executable) is None:
             raise zc.buildout.UserError(
-                "luarocks wasn't found in your system's PATH environment "
-                "variable.\nMake sure luarocks is installed and set on your "
-                "PATH."
+                "{} wasn't found in your system's PATH environment "
+                "variable.\nMake sure luarocks is installed and on your "
+                "PATH.".format(executable)
             )
 
         rocks_to_install = self.options.get('rocks', '').split('\n')
         for rock in rocks_to_install:
-            command = ' '.join(['luarocks', 'install', '--local'] +
+            command = ' '.join([executable, 'install', '--local'] +
                                [r.strip() for r in rock.split(' ')])
             process = subprocess.Popen(
                 command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
