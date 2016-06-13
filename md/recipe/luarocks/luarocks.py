@@ -17,6 +17,9 @@ class LuaRocks(object):
         self.buildout = buildout
         self.name = name
         self.options = options
+        self.target = os.path.join(
+            buildout['buildout']['parts-directory'],
+            name)
         self.verbose = int(buildout['buildout'].get('verbosity', 0))
 
     def install(self):
@@ -39,5 +42,8 @@ class LuaRocks(object):
             if process.returncode:
                 raise zc.buildout.UserError(
                     "Command failed: {}\n{}".format(command, error))
+            if self.verbose:
+                print output
+        return [self.target]
 
     update = install
