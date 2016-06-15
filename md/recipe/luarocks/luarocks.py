@@ -22,6 +22,17 @@ class LuaRocks(object):
             name)
         self.verbose = int(buildout['buildout'].get('verbosity', 0))
 
+    def get_existing_rocks(self):
+        command = ['luarocks', 'list', '--porcelain']
+        process = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        output, error = process.communicate()
+        if process.returncode:
+            raise zc.buildout.UserError(
+                "Command failed: {}\n{}".format(command, error))
+        return [l.split('\t') for l in output.split('\n')]
+
     def install(self):
         executable = self.options.get('executable', 'luarocks').strip()
         if whereis(executable) is None:
@@ -31,10 +42,26 @@ class LuaRocks(object):
                 "PATH.".format(executable)
             )
 
+        existing_rocks = self.get_existing_rocks()
+
         rocks_to_install = self.options.get('rocks', '').split('\n')
-        for rock in rocks_to_install:
+        for line in rocks_to_install:
+            rock_and_version = [r.strip() for r in line.split(' ')]
+            rock = rock_and_version[0]
+            version = len(rock_and_version) > 1 and rock_and_version[1] or None
+            already_installed = \
+                filter(lambda x: rock in x
+                       and (version is None or
+                            (version is not None and version in x))
+                       and x[2] == 'installed',
+                       existing_rocks)
+
+            if already_installed:
+                print "Skipping \"{}\"; it's already installed".format(line)
+                continue
+
             command = ' '.join([executable, 'install', '--local'] +
-                               [r.strip() for r in rock.split(' ')])
+                               rock_and_version)
             process = subprocess.Popen(
                 command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 shell=True
