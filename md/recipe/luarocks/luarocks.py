@@ -44,10 +44,12 @@ class LuaRocks(object):
 
         existing_rocks = self.get_existing_rocks()
 
-        rocks_to_install = self.options.get('rocks', '').split('\n')
+        rocks_to_install = self.options.get('rocks', '').splitlines()
         for line in rocks_to_install:
             rock_and_version = [r.strip() for r in line.split(' ')]
             rock = rock_and_version[0]
+            if not rock:
+                continue
             version = len(rock_and_version) > 1 and rock_and_version[1] or None
             already_installed = \
                 filter(lambda x: rock in x
