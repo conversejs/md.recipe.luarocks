@@ -23,7 +23,8 @@ class LuaRocks(object):
         self.verbose = int(buildout['buildout'].get('verbosity', 0))
 
     def get_existing_rocks(self):
-        command = ['luarocks', 'list', '--porcelain']
+        executable = self.options.get('executable', 'luarocks').strip()
+        command = [executable, 'list', '--porcelain']
         process = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
