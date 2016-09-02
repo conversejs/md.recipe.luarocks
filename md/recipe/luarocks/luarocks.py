@@ -24,15 +24,20 @@ class LuaRocks(object):
 
     def get_existing_rocks(self):
         executable = self.options.get('executable', 'luarocks').strip()
-        command = [executable, 'list', '--porcelain']
+        command = [executable, 'list', '--porcelain', '--tree', self.target]
         process = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         output, error = process.communicate()
+        if error:
+            print error
         if process.returncode:
             raise zc.buildout.UserError(
                 "Command failed: {}\n{}".format(command, error))
-        return [l.split('\t') for l in output.split('\n')]
+        if output:
+            return [l.split('\t') for l in output.split('\n')]
+        else:
+            return []
 
     def install(self):
         executable = self.options.get('executable', 'luarocks').strip()
@@ -47,7 +52,7 @@ class LuaRocks(object):
 
         rocks_to_install = self.options.get('rocks', '').splitlines()
         for line in rocks_to_install:
-            rock_and_version = [r.strip() for r in line.split(' ')]
+            rock_and_version = [r for r in line.strip().split(' ')]
             rock = rock_and_version[0]
             if not rock:
                 continue
@@ -63,7 +68,7 @@ class LuaRocks(object):
                 print "Skipping \"{}\"; it's already installed".format(line)
                 continue
 
-            command = ' '.join([executable, 'install', '--local'] +
+            command = ' '.join([executable, 'install', '--tree', self.target] +
                                rock_and_version)
             process = subprocess.Popen(
                 command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
