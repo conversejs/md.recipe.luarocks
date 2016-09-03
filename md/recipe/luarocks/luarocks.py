@@ -24,16 +24,17 @@ class LuaRocks(object):
 
     def get_existing_rocks(self):
         executable = self.options.get('executable', 'luarocks').strip()
-        command = [executable, 'list', '--porcelain', '--tree', self.target]
+        cmd = '{} list --porcelain --tree={}'.format(executable, self.target)
         process = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            shell=True,
         )
         output, error = process.communicate()
         if error:
             print error
         if process.returncode:
             raise zc.buildout.UserError(
-                "Command failed: {}\n{}".format(command, error))
+                "Command failed: {}\n{}".format(cmd, error))
         if output:
             return [l.split('\t') for l in output.split('\n')]
         else:
@@ -68,16 +69,16 @@ class LuaRocks(object):
                 print "Skipping \"{}\"; it's already installed".format(line)
                 continue
 
-            command = ' '.join([executable, 'install', '--tree', self.target] +
-                               rock_and_version)
+            cmd = '{} install --tree={} {}'.format(
+                executable, self.target, ' '.join(rock_and_version))
             process = subprocess.Popen(
-                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 shell=True
             )
             output, error = process.communicate()
             if process.returncode:
                 raise zc.buildout.UserError(
-                    "Command failed: {}\n{}".format(command, error))
+                    "Command failed: {}\n{}".format(cmd, error))
             if self.verbose:
                 print output
         return [self.target]
