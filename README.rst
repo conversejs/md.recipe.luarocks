@@ -16,10 +16,39 @@ Here's an example buildout.cfg configuration ::
 
     [luarocks]
     recipe = md.recipe.luarocks
-    rocks = 
+    rocks =
         lua-cjson
         lua-zlib
         luadbi
+
+Specifying additional install options
+*************************************
+
+You can specify additional install options, to for example provide an additional
+mirror or to restrict downloads from a particular server.
+To do this, use ``install_options``::
+
+    [luarocks]
+    recipe = md.recipe.luarocks
+    install_options = --only-server=http://localhost:8000
+    rocks =
+        lua-cjson
+        lua-zlib
+        luadbi
+
+Here are some options available to you::
+
+	--server=<server>      Fetch rocks/rockspecs from this server
+	                       (takes priority over config file)
+	--only-server=<server> Fetch rocks/rockspecs from this server only
+	                       (overrides any entries in the config file)
+	--only-sources=<url>   Restrict downloads to paths matching the
+	                       given URL.
+	--verbose              Display verbose output of commands executed.
+	--timeout=<seconds>    Timeout on network operations, in seconds.
+	                       0 means no timeout (wait forever).
+	                       Default is 30.
+
 
 Specifying the luarock version number
 *************************************
@@ -37,7 +66,7 @@ For example::
 
     [luarocks]
     recipe = md.recipe.luarocks
-    rocks = 
+    rocks =
         lua-cjson 2.1.0-1
         lua-zlib 0.4-1
         luadbi 0.5-1
@@ -54,7 +83,7 @@ well. This is done as follows::
 
     [luarocks]
     recipe = md.recipe.luarocks
-    rocks = 
+    rocks =
         lua-zlib 0.4-1 ZLIB_DIR=$ZLIB_DIR
         luadbi-sqlite3 0.5-1 SQLITE_DIR=$SQLITE_DIR
 
@@ -70,6 +99,6 @@ executable in your PATH. You can specify an alternative exectuable, like so::
     [luarocks]
     recipe = md.recipe.luarocks
     executable = luarocks-5.1
-    rocks = 
+    rocks =
         lua-zlib
         luadbi-sqlite3

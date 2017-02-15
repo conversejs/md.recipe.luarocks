@@ -69,8 +69,12 @@ class LuaRocks(object):
                 print "Skipping \"{}\"; it's already installed".format(line)
                 continue
 
-            cmd = '{} install --tree={} {}'.format(
-                executable, self.target, ' '.join(rock_and_version))
+            cmd = '{} install {} --tree={} {}'.format(
+                executable,
+                self.options.get('install_options', ''),
+                self.target,
+                ' '.join(rock_and_version)
+            )
             process = subprocess.Popen(
                 cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 shell=True
