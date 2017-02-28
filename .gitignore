@@ -3,3 +3,6 @@
 *.pyo
 .*.sw?
 *~
+bin
+include
+lib
