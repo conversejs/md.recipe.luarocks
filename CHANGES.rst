@@ -1,2 +1,8 @@
-0.1 (Unreleased)
-================
+=======
+Changes
+=======
+
+0.1 (unreleased)
+----------------
+
+- Initial release.
