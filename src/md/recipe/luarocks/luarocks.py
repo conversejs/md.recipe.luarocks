@@ -31,7 +31,7 @@ class LuaRocks(object):
         )
         output, error = process.communicate()
         if error:
-            print error
+            print(error)
         if process.returncode:
             raise zc.buildout.UserError(
                 "Command failed: {}\n{}".format(cmd, error))
@@ -59,14 +59,13 @@ class LuaRocks(object):
                 continue
             version = len(rock_and_version) > 1 and rock_and_version[1] or None
             already_installed = \
-                filter(lambda x: rock in x
-                       and (version is None or
-                            (version is not None and version in x))
-                       and x[2] == 'installed',
-                       existing_rocks)
+                [x for x in existing_rocks if
+                 rock in x and
+                 (version is None or (version is not None and version in x))
+                 and x[2] == 'installed']
 
             if already_installed:
-                print "Skipping \"{}\"; it's already installed".format(line)
+                print("Skipping \"{}\"; it's already installed".format(line))
                 continue
 
             cmd = '{} install {} --tree={} {}'.format(
@@ -84,7 +83,7 @@ class LuaRocks(object):
                 raise zc.buildout.UserError(
                     "Command failed: {}\n{}".format(cmd, error))
             if self.verbose:
-                print output
+                print(output)
         return [self.target]
 
     update = install
