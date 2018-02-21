@@ -1,1 +1,1 @@
-from .luarocks import LuaRocks
+from .luarocks import LuaRocks  # NOQA

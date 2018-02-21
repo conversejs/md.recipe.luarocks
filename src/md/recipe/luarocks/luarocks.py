@@ -18,17 +18,14 @@ class LuaRocks(object):
         self.name = name
         self.options = options
         self.target = os.path.join(
-            buildout['buildout']['parts-directory'],
-            name)
+            buildout['buildout']['parts-directory'], name)
         self.verbose = int(buildout['buildout'].get('verbosity', 0))
 
     def get_existing_rocks(self):
         executable = self.options.get('executable', 'luarocks').strip()
         cmd = '{} list --porcelain --tree={}'.format(executable, self.target)
         process = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            shell=True,
-        )
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         output, error = process.communicate()
         if error:
             print(error)
@@ -36,6 +33,7 @@ class LuaRocks(object):
             raise zc.buildout.UserError(
                 "Command failed: {}\n{}".format(cmd, error))
         if output:
+            output = output.decode()
             return [l.split('\t') for l in output.split('\n')]
         else:
             return []
