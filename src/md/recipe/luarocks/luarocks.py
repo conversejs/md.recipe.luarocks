@@ -44,11 +44,9 @@ class LuaRocks(object):
             raise zc.buildout.UserError(
                 "{} wasn't found in your system's PATH environment "
                 "variable.\nMake sure luarocks is installed and on your "
-                "PATH.".format(executable)
-            )
+                "PATH.".format(executable))
 
         existing_rocks = self.get_existing_rocks()
-
         rocks_to_install = self.options.get('rocks', '').splitlines()
         for line in rocks_to_install:
             rock_and_version = [r for r in line.strip().split(' ')]
@@ -61,21 +59,17 @@ class LuaRocks(object):
                  rock in x and
                  (version is None or (version is not None and version in x))
                  and x[2] == 'installed']
-
             if already_installed:
                 print("Skipping \"{}\"; it's already installed".format(line))
                 continue
-
             cmd = '{} install {} --tree={} {}'.format(
                 executable,
                 self.options.get('install_options', ''),
                 self.target,
-                ' '.join(rock_and_version)
-            )
+                ' '.join(rock_and_version))
             process = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                shell=True
-            )
+                cmd,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             output, error = process.communicate()
             if process.returncode:
                 raise zc.buildout.UserError(
