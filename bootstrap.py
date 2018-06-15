@@ -23,9 +23,9 @@ import sys
 import tempfile
 
 
-BASEURL = 'https://pascal.minddistrict.com'
+BASEURL = 'https://dist.minddistrict.io'
 TMPEGGS = tempfile.mkdtemp()
-ZCBUILDOUT = '2.10.0'
+ZCBUILDOUT = '2.11.3'
 
 
 ######################################################################
@@ -70,7 +70,7 @@ cmd = [sys.executable, '-c',
        'from setuptools.command.easy_install import main; main()',
        '-mZqNxd', TMPEGGS,
        '-i', BASEURL + '/root/minddistrict/+simple/',
-       '-H', 'pascal.minddistrict.com',
+       '-H', 'dist.minddistrict.io',
        requirement]
 
 setuptools_path = ws.find(
