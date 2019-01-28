@@ -23,7 +23,6 @@ pipeline {
                     if (fileExists('bin/jenkins-code-analysis')) {
                         sh 'bin/jenkins-code-analysis'
                         sloccountPublish encoding: '', pattern: 'parts/jenkins-test/sloccount.sc', ignoreBuildFailure: true
-                        checkstyle canComputeNew: false, canRunOnFailed: true, defaultEncoding: '', failedTotalAll: '0', healthy: '', pattern: 'parts/code-analysis/scsslint.xml', unHealthy: '', unstableTotalAll: '0'
                         warnings canComputeNew: false,
                             canResolveRelativePaths: false,
                             categoriesPattern: '',
@@ -35,6 +34,7 @@ pipeline {
                             [parserName: 'i18ndude', pattern: 'parts/code-analysis/find-untranslated.log'],
                             [parserName: 'flake8', pattern: 'parts/code-analysis/flake8.log'],
                             [parserName: 'JSLint', pattern: 'parts/code-analysis/jshint.xml'],
+                            [parserName: 'stylelint', pattern: 'parts/code-analysis/stylelint.log'],
                             [parserName: 'xmllint', pattern: 'parts/code-analysis/xmllint.log']], unHealthy: '', unstableTotalAll: '0'
                     }
                 }
